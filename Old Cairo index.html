@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Old Cairo Booklets | رحلتي</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f4f1ec;direction:rtl;min-height:100vh;color:#1a1a1a}
+.header{background:linear-gradient(135deg,#0f0f1a 0%,#1a1a35 50%,#0f1a2e 100%);padding:0 20px;position:sticky;top:0;z-index:300;box-shadow:0 2px 24px rgba(0,0,0,.4)}
+.header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 0;flex-wrap:wrap;gap:10px}
+.brand-main{display:flex;align-items:baseline;gap:8px}
+.brand-ocb{font-size:18px;font-weight:900;color:#f5a623}
+.brand-sep{color:rgba(255,255,255,.3);font-size:16px}
+.brand-rihla{font-size:14px;font-weight:700;color:rgba(255,255,255,.7)}
+.brand-sub{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px}
+.header-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.badge-count{background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.4);color:#f5a623;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700}
+.hbtn{border:none;border-radius:8px;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.hbtn-gold{background:#f5a623;color:#0f0f1a}
+.hbtn-ghost{background:rgba(255,255,255,.08);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.15)}
+.main-nav{background:#1a1a35;border-bottom:1px solid rgba(245,166,35,.2);overflow-x:auto}
+.main-nav-inner{max-width:1100px;margin:0 auto;display:flex}
+.nav-tab{padding:12px 20px;border:none;background:none;color:rgba(255,255,255,.5);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap}
+.nav-tab:hover{color:rgba(255,255,255,.8)}
+.nav-tab.active{color:#f5a623;border-bottom-color:#f5a623;font-weight:800}
+.container{max-width:1100px;margin:0 auto;padding:20px 16px}
+.btn{border:none;border-radius:10px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .2s}
+.btn:hover{opacity:.88}
+.btn-primary{background:linear-gradient(135deg,#f5a623,#e8891a);color:white;box-shadow:0 3px 12px rgba(245,166,35,.35)}
+.btn-ghost{background:#ede8df;color:#666}
+.btn-danger{background:#fff0f0;color:#e53e3e}
+.btn-sm{padding:6px 12px;font-size:12px;border-radius:8px}
+.btn-icon{padding:6px 9px;border-radius:8px;border:none;cursor:pointer;font-family:inherit;font-size:13px}
+.add-big{width:100%;background:linear-gradient(135deg,#f5a623,#e8891a);color:white;border:none;border-radius:14px;padding:16px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:18px;font-family:inherit;box-shadow:0 4px 16px rgba(245,166,35,.4)}
+.students-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:13px}
+.student-card{background:white;border-radius:14px;padding:15px;box-shadow:0 2px 10px rgba(0,0,0,.06);border:1px solid #ede8df}
+.sc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px}
+.sc-num{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#f5a623,#e8891a);color:white;font-weight:900;font-size:12px;display:flex;align-items:center;justify-content:center}
+.sc-name{font-weight:800;font-size:14px;margin-top:5px}
+.sc-info{font-size:11px;color:#999;margin-top:3px}
+.sc-actions{display:flex;gap:5px}
+.progress-wrap{margin-top:9px}
+.progress-label{font-size:11px;color:#bbb;margin-bottom:4px}
+.progress-bar{height:4px;background:#f0ebe0;border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#f5a623,#e8891a);border-radius:4px}
+.sc-pct{display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;margin-top:7px}
+.pct-high{background:#e6f4ea;color:#16a34a}
+.pct-mid{background:#fff8e0;color:#d97706}
+.pct-low{background:#fef2f2;color:#dc2626}
+.empty{text-align:center;padding:60px 20px;color:#bbb}
+.empty-icon{font-size:48px;margin-bottom:14px}
+.empty-title{font-size:16px;font-weight:700;color:#999}
+.empty-sub{font-size:13px;margin-top:6px}
+.edit-header{background:linear-gradient(135deg,#0f0f1a,#1a1a35);padding:15px 18px;border-radius:14px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.edit-header-title{color:white;font-weight:800;font-size:15px}
+.edit-header-sub{color:rgba(255,255,255,.5);font-size:11px;margin-top:2px}
+.section-selector{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+.sec-btn{padding:7px 14px;border-radius:20px;border:none;background:#ede8df;color:#888;font-weight:600;cursor:pointer;font-family:inherit;font-size:12px;transition:all .2s}
+.sec-btn.active{background:#f5a623;color:white;font-weight:800}
+.form-card{background:white;border-radius:14px;padding:18px;margin-bottom:13px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.form-section-title{font-weight:800;font-size:15px;color:#f5a623;margin-bottom:15px}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:12px;font-weight:700;color:#666;margin-bottom:4px}
+.field textarea{width:100%;min-height:52px;border:1px solid #e8ddd0;border-radius:9px;padding:8px 11px;font-family:inherit;font-size:13px;resize:vertical;direction:rtl;outline:none;transition:border .2s}
+.field textarea:focus{border-color:#f5a623}
+.field textarea.filled{background:#fdfaf5;border-color:#f0e0c0}
+.upload-box{background:white;border:2px dashed #f5a623;border-radius:14px;padding:16px;margin-bottom:15px}
+.upload-title{font-weight:800;font-size:13px;color:#333;margin-bottom:9px}
+.upload-actions{display:flex;gap:8px;flex-wrap:wrap}
+.upload-btn{background:#fdf6ee;border:1px solid #f5a623;border-radius:9px;padding:7px 13px;cursor:pointer;font-family:inherit;font-weight:700;color:#e8891a;font-size:12px}
+.previews{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
+.preview-img{height:70px;border-radius:7px;object-fit:cover;border:2px solid #f5a623}
+.banner{border-radius:12px;padding:11px 15px;margin-bottom:13px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:9px}
+.banner-success{background:#f0fff4;border:2px solid #4ade80;color:#166534}
+.banner-loading{background:#fffbeb;border:2px solid #f5a623;color:#92400e}
+.spinner{width:17px;height:17px;border:3px solid #f5a623;border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.form-actions{display:flex;gap:9px;margin-top:5px}
+.form-actions .btn{flex:1;padding:13px;font-size:14px}
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:13px;margin-bottom:22px}
+.dash-stat{background:white;border-radius:14px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.06);text-align:center}
+.dash-stat-num{font-size:32px;font-weight:900;color:#f5a623}
+.dash-stat-label{font-size:12px;color:#999;margin-top:3px;font-weight:600}
+.analysis-wrap{overflow-x:auto;margin-bottom:20px}
+.analysis-table{width:100%;border-collapse:collapse;font-size:12px;background:white;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.analysis-table th{background:#1a1a35;color:#f5a623;padding:10px 13px;text-align:right;font-weight:800;white-space:nowrap}
+.analysis-table td{padding:9px 13px;border-bottom:1px solid #f4f1ec;white-space:nowrap}
+.analysis-table tr:last-child td{border-bottom:none}
+.analysis-table tr:hover td{background:#fdf9f3}
+.pct-cell{font-weight:800;text-align:center}
+.section-h{font-weight:800;font-size:16px;color:#333;margin-bottom:11px}
+.section-sub{font-size:12px;color:#999;margin-bottom:15px}
+.key-box{background:#fffbeb;border:1px solid #f5a623;border-radius:10px;padding:13px;margin-bottom:16px;font-size:12px;color:#92400e}
+.key-box input{border:1px solid #f5a623;border-radius:7px;padding:7px 11px;font-size:12px;font-family:inherit;direction:ltr;outline:none;margin-top:7px;width:100%}
+@media(max-width:600px){
+  .header-inner{padding:10px 0}
+  .brand-ocb{font-size:15px}
+  .students-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <div class="brand-main">
+        <span class="brand-ocb">Old Cairo Booklets</span>
+        <span class="brand-sep">|</span>
+        <span class="brand-rihla">رحلتي</span>
+      </div>
+      <div class="brand-sub">مصر القديمة · إدارة وتحليل بيانات الطلاب</div>
+    </div>
+    <div class="header-actions">
+      <div class="badge-count" id="countBadge">0 / 32 طالب</div>
+      <button class="hbtn hbtn-gold" onclick="exportExcel()">⬇ Excel</button>
+      <button class="hbtn hbtn-ghost" onclick="exportJSON()">💾 نسخة احتياطية</button>
+      <button class="hbtn hbtn-ghost" onclick="document.getElementById('importFile').click()">📂 استيراد</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(this)">
+    </div>
+  </div>
+</div>
+
+<div class="main-nav">
+  <div class="main-nav-inner">
+    <button class="nav-tab active" id="navStudents" onclick="showPage('students')">👥 الطلاب</button>
+    <button class="nav-tab" id="navAnalysis" onclick="showPage('analysis')">📊 التحليل</button>
+    <button class="nav-tab" id="navSettings" onclick="showPage('settings')">⚙️ الإعدادات</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <div id="pageStudents">
+    <button class="add-big" onclick="startNewStudent()">+ إضافة طالب جديد</button>
+    <div id="studentsList"></div>
+  </div>
+
+  <div id="pageAnalysis" style="display:none">
+    <div class="section-h">📊 تحليل البيانات</div>
+    <div class="section-sub">Old Cairo Booklets · مصر القديمة</div>
+    <div class="dash-grid" id="dashStats"></div>
+    <div class="section-h" style="margin-bottom:11px">تقدم الطلاب بالتفصيل</div>
+    <div class="analysis-wrap"><table class="analysis-table" id="analysisTable"></table></div>
+  </div>
+
+  <div id="pageSettings" style="display:none">
+    <div class="form-card">
+      <div class="form-section-title">🔑 مفتاح Anthropic API</div>
+      <div class="key-box">
+        <div>عشان يشتغل الاستخراج التلقائي بالـ AI، محتاج تحط مفتاح الـ API هنا. المفتاح بيتحفظ في متصفحك بس ومش بيتبعت لأي مكان.</div>
+        <input type="password" id="apiKeyInput" placeholder="sk-ant-..." value="">
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <button class="btn btn-primary btn-sm" onclick="saveKey()">حفظ المفتاح</button>
+          <button class="btn btn-ghost btn-sm" onclick="clearKey()">مسح</button>
+        </div>
+        <div id="keyStatus" style="margin-top:7px;font-size:11px;color:#666"></div>
+      </div>
+      <div style="font-size:12px;color:#999;margin-top:10px">
+        للحصول على مفتاح API: اذهب إلى <a href="https://console.anthropic.com" target="_blank" style="color:#f5a623">console.anthropic.com</a> → API Keys → Create Key
+      </div>
+    </div>
+  </div>
+
+  <div id="editPanel" style="display:none">
+    <div class="edit-header">
+      <div>
+        <div class="edit-header-title" id="editTitle">طالب جديد</div>
+        <div class="edit-header-sub">Old Cairo Booklets | رحلتي</div>
+      </div>
+      <button class="btn btn-ghost" onclick="cancelEdit()" style="background:rgba(255,255,255,.1);color:white">← رجوع</button>
+    </div>
+
+    <div id="bannerSuccess" class="banner banner-success" style="display:none">✅ تم الاستخراج! راجع البيانات وعدّل أي حاجة قبل الحفظ.</div>
+    <div id="bannerLoading" class="banner banner-loading" style="display:none"><div class="spinner"></div> جاري قراءة الخط واستخراج البيانات...</div>
+
+    <div class="upload-box">
+      <div class="upload-title">📸 ارفع صور الكُتيب للاستخراج التلقائي بالـ AI</div>
+      <div class="upload-actions">
+        <button class="upload-btn" onclick="document.getElementById('imgInput').click()">📁 اختر الصور (<span id="imgCount">0</span>)</button>
+        <button class="btn btn-primary btn-sm" onclick="extractAI()">🤖 استخرج بالـ AI</button>
+      </div>
+      <input type="file" id="imgInput" accept="image/*" multiple style="display:none" onchange="handleImgs(this)">
+      <div class="previews" id="previews"></div>
+    </div>
+
+    <div class="section-selector" id="secSelector"></div>
+    <div class="form-card">
+      <div class="form-section-title" id="formTitle"></div>
+      <div id="formFields"></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" onclick="saveStudent()">💾 حفظ الطالب</button>
+      <button class="btn btn-ghost" onclick="cancelEdit()">إلغاء</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ===== QUESTIONS =====
+const QUESTIONS = [
+  {id:"name",label:"الاسم",section:"بطاقة الطالب"},
+  {id:"age",label:"السن",section:"بطاقة الطالب"},
+  {id:"area",label:"المنطقة",section:"بطاقة الطالب"},
+  {id:"qs1",label:"ما الشيء الواحد الذي تريد معرفته عن مستقبلك الدراسي؟",section:"أسئلة البداية"},
+  {id:"qs2",label:"كيف تشعر تجاه قرار اختيار مسارك الدراسي؟",section:"أسئلة البداية"},
+  {id:"qs3",label:"ما أكبر مخاوفك حالياً؟",section:"أسئلة البداية"},
+  {id:"qe1",label:"ما الفكرة الواحدة التي غيّرت نظرتك اليوم؟",section:"أسئلة النهاية"},
+  {id:"qe2",label:"ما السؤال الذي لا يزال يدور في ذهنك؟",section:"أسئلة النهاية"},
+  {id:"qe3",label:"ماذا ستفعل differently غداً بسبب ما تعلمته؟",section:"أسئلة النهاية"},
+  {id:"s1q1",label:"كيف تشرح الفرق بين المسارات الخمسة لصديق؟",section:"الجلسة ١: سوق المسارات"},
+  {id:"s1q2",label:"أي مسار كان مفاجأة لك؟",section:"الجلسة ١: سوق المسارات"},
+  {id:"s1q3",label:"صف نفسك بـ٣ كلمات: هل تتوافق مع المسار الذي تفضله؟",section:"الجلسة ١: سوق المسارات"},
+  {id:"s1q4",label:"رسالة قصيرة: أنا أتميز بـ [مهارة]، لذا المسار [X] يناسبني لأن...",section:"الجلسة ١: سوق المسارات"},
+  {id:"s1q5",label:"قارن بين مسارين: ما الـ٣ أوجه تشابه و٣ اختلافات؟",section:"الجلسة ١: سوق المسارات"},
+  {id:"s2q1",label:"هل اختيار فريقك كان based on شغف أم على 'اللي مطلوب'؟",section:"الجلسة ٢: من الحلم إلى المهنة"},
+  {id:"s2q2",label:"أي مهنة من 'مهن المستقبل' أثارت فضولك؟ ما الخطوة الأولى؟",section:"الجلسة ٢: من الحلم إلى المهنة"},
+  {id:"s2q3",label:"قصة من قصص النجاح تشبه ظروفك أكثر؟ لماذا؟",section:"الجلسة ٢: من الحلم إلى المهنة"},
+  {id:"s2q4",label:"ابحث عن شخص ناجح في المجال الذي تفضله: ما الـ٣ عادات؟",section:"الجلسة ٢: من الحلم إلى المهنة"},
+  {id:"s2q5",label:"يوم في حياتي بعد ١٠ سنوات: اكتب ٥ جمل",section:"الجلسة ٢: من الحلم إلى المهنة"},
+  {id:"s3q1",label:"أي خرافة من خرافات التعليم كنت تصدقها؟ من أين أتت؟",section:"الجلسة ٣: فلتر القناعات"},
+  {id:"s3q2",label:"في 'مزاد الكلمات'، هل كان قرارك سريع أم ترددت؟ لماذا؟",section:"الجلسة ٣: فلتر القناعات"},
+  {id:"s3q3",label:"متى آخر مرة غيّرت فيها رأياً بناءً على أرقام/حقائق؟",section:"الجلسة ٣: فلتر القناعات"},
+  {id:"s3q4",label:"سيناريو مواجهة حقيقي: من الشخص الذي يعارض قرارك؟ ما الـ٣ حجج؟",section:"الجلسة ٣: فلتر القناعات"},
+  {id:"s3q5",label:"ما القناعة السلبية التي تريد كسرها؟ ما البديل الإيجابي؟",section:"الجلسة ٣: فلتر القناعات"},
+  {id:"s4q1",label:"هل مثلث القرار (الحلم-القدرة-الظروف) متوازن في حالتك؟ أي ركن يحتاج تقوية؟",section:"الجلسة ٤: التوازن بين الحلم والواقع"},
+  {id:"s4q2",label:"أي 'محطة تمييز' تشبه موقفك؟ هل البديل المقترح يرضيك؟",section:"الجلسة ٤: التوازن بين الحلم والواقع"},
+  {id:"s4q3",label:"هل قرارك الحالي ناتج عن 'أريد' أم 'يجب أن'؟ كيف تعرف الفرق؟",section:"الجلسة ٤: التوازن بين الحلم والواقع"},
+  {id:"s4q4",label:"ارسم مثلثك الشخصي: قيّم نفسك من ١٠ في كل ركن",section:"الجلسة ٤: التوازن بين الحلم والواقع"},
+  {id:"s4q5",label:"اكتب خطة 'Plan B' حقيقية: إذا لم يحدث الحلم، فسأفعل البديل الآن",section:"الجلسة ٤: التوازن بين الحلم والواقع"},
+  {id:"s5q1",label:"هل أوزان المعايير (٣٠٪-٢٥٪-٢٥٪-٢٠٪) تعكس أولوياتك؟",section:"الجلسة ٥: ميزان القرار"},
+  {id:"s5q2",label:"في المثال التطبيقي، هل كنت ستختلف مع النتيجة؟ لماذا؟",section:"الجلسة ٥: ميزان القرار"},
+  {id:"s5q3",label:"ما الاختلاف بين 'أحب شيئاً' و'أنا جيد في شيء'؟ هل يجب أن يتطابقا؟",section:"الجلسة ٥: ميزان القرار"},
+  {id:"s5q4",label:"املأ مصفوفة القرار لـ٣ خيارات حقيقية في حياتك",section:"الجلسة ٥: ميزان القرار"},
+  {id:"s5q5",label:"شارك النتيجة مع شخص تثق به: هل يرى ما تراد؟",section:"الجلسة ٥: ميزان القرار"},
+  {id:"s6q1",label:"كيف شعرت وأنت تعلن قرارك أمام الجميع؟ (الإجابة تكشف مستوى الثقة)",section:"الجلسة ٦: إعلان الانطلاق"},
+  {id:"s6q2",label:"أي سؤال 'صعب' كان الأصعب في الإجابة؟",section:"الجلسة ٦: إعلان الانطلاق"},
+  {id:"s6q3",label:"هل 'رسالة للمستقبل' كتبتها بأمل أم بخوف؟",section:"الجلسة ٦: إعلان الانطلاق"},
+  {id:"s6q4",label:"سجل نفسك وأنت تعلن قرارك لمدة ٢ دقيقة",section:"الجلسة ٦: إعلان الانطلاق"},
+  {id:"s6q5",label:"اكتب عقد مع نفسك: ألتزم بـ [المسار] وسأحقق [هدف] بحلول [تاريخ]",section:"الجلسة ٦: إعلان الانطلاق"},
+  {id:"s7q1",label:"ما الجلسة السابقة التي أثّرت فيك أكثر؟ لماذا؟",section:"الجلسة ٧"},
+  {id:"s7q2",label:"ما الخطوة العملية التي ستتخذها هذا الأسبوع؟",section:"الجلسة ٧"},
+  {id:"s8q1",label:"بعد كل الجلسات: كيف تصف رحلتك من البداية لهنا؟",section:"الجلسة ٨"},
+  {id:"s8q2",label:"ما الشيء الواحد الذي تغيّر في طريقة تفكيرك تماماً؟",section:"الجلسة ٨"},
+  {id:"s8q3",label:"ما رسالتك لـ'أنت' قبل 6 أشهر؟",section:"الجلسة ٨"},
+  {id:"fu1",label:"بعد أسبوع: هل ناقشت ما تعلمته مع أحد؟ ما رأيه؟",section:"متابعة طويل المدى"},
+  {id:"fu2",label:"بعد أسبوع: ما الخطوة العملية الواحدة التي نفذتها؟",section:"متابعة طويل المدى"},
+  {id:"fu3",label:"بعد شهر: هل قرارك لا يزال ثابتاً؟ ما الذي تغير؟",section:"متابعة طويل المدى"},
+  {id:"fu4",label:"بعد شهر: ما المهارة الجديدة التي اكتسبتها؟",section:"متابعة طويل المدى"},
+  {id:"fu5",label:"قبل الامتحانات: ارجع لـ'شهادة القرار': هل تريد تعديل أي شيء؟",section:"متابعة طويل المدى"},
+  {id:"fu6",label:"قبل الامتحانات: ما الـ٣ أشياء تريد أن يعرفها 'أنت' منذ ٣ أشهر؟",section:"متابعة طويل المدى"},
+  {id:"tt1",label:"إيه الرسالة اللي الفيديو بيحاول يوصلها بشكل غير مباشر؟",section:"أسئلة TikTok"},
+  {id:"tt2",label:"ليه الناس ممكن تقلد وراتريند حتى لو هو غلط؟",section:"أسئلة TikTok"},
+  {id:"tt3",label:"ازاي تصرفات الشخص اللي بتتفرج عليه بتأثر عليك؟",section:"أسئلة TikTok"},
+  {id:"tt4",label:"بينك وبين نفسك: إيه أكتر شخصية TikTok أنت شبهها؟",section:"أسئلة TikTok"},
+  {id:"tt5",label:"الفيديوهات اللي بتتعرض عليك: لوادفها إيه؟ وايه مدى تأثيرها عليك؟",section:"أسئلة TikTok"},
+];
+
+const SECTIONS = [...new Set(QUESTIONS.map(q=>q.section))];
+
+// ===== STATE =====
+let students = JSON.parse(localStorage.getItem('ocb_students')||'[]');
+let cur = null, imgs = [], activeSec = null;
+
+function persist(){ localStorage.setItem('ocb_students', JSON.stringify(students)); }
+function hasVal(v){ return v && v!=='غير محدد' && v!==''; }
+function pct(s){ return Math.round(QUESTIONS.filter(q=>hasVal(s[q.id])).length/QUESTIONS.length*100); }
+function getKey(){ return localStorage.getItem('ocb_apikey')||''; }
+function saveKey(){
+  const k=document.getElementById('apiKeyInput').value.trim();
+  if(!k){alert('الرجاء إدخال المفتاح');return;}
+  localStorage.setItem('ocb_apikey',k);
+  document.getElementById('keyStatus').textContent='✅ تم حفظ المفتاح';
+  document.getElementById('keyStatus').style.color='#16a34a';
+}
+function clearKey(){
+  localStorage.removeItem('ocb_apikey');
+  document.getElementById('apiKeyInput').value='';
+  document.getElementById('keyStatus').textContent='تم مسح المفتاح';
+}
+
+// ===== PAGES =====
+function showPage(p){
+  ['students','analysis','settings'].forEach(x=>{
+    document.getElementById('page'+cap(x)).style.display=x===p?'':'none';
+    document.getElementById('nav'+cap(x)).className='nav-tab'+(x===p?' active':'');
+  });
+  document.getElementById('editPanel').style.display='none';
+  if(p==='students') renderList();
+  if(p==='analysis') renderAnalysis();
+  if(p==='settings'){
+    const k=getKey();
+    document.getElementById('apiKeyInput').value=k;
+    document.getElementById('keyStatus').textContent=k?'✅ مفتاح محفوظ':'لا يوجد مفتاح محفوظ';
+    document.getElementById('keyStatus').style.color=k?'#16a34a':'#999';
+  }
+}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+
+// ===== STUDENTS LIST =====
+function renderList(){
+  document.getElementById('countBadge').textContent=`${students.length} / 32 طالب`;
+  const el=document.getElementById('studentsList');
+  if(!students.length){
+    el.innerHTML=`<div class="empty"><div class="empty-icon">📋</div><div class="empty-title">ابدأ بإضافة أول طالب</div><div class="empty-sub">ارفع صور الكُتيب والـ AI هيستخرج البيانات تلقائياً</div></div>`;
+    return;
+  }
+  el.innerHTML='<div class="students-grid">'+students.map((s,i)=>{
+    const p=pct(s);
+    const cls=p>=80?'pct-high':p>=50?'pct-mid':'pct-low';
+    return `<div class="student-card">
+      <div class="sc-top">
+        <div class="sc-num">${i+1}</div>
+        <div class="sc-actions">
+          <button class="btn-icon" style="background:#f5f5f5" onclick="editSt(${i})">✏️</button>
+          <button class="btn-icon" style="background:#fff0f0" onclick="delSt(${i})">🗑</button>
+        </div>
+      </div>
+      <div class="sc-name">${s.name||'طالب بدون اسم'}</div>
+      <div class="sc-info">${s.age?'السن: '+s.age:''} ${s.area?'· '+s.area:''}</div>
+      <span class="sc-pct ${cls}">${p}% مكتمل</span>
+      <div class="progress-wrap">
+        <div class="progress-label">${QUESTIONS.filter(q=>hasVal(s[q.id])).length} / ${QUESTIONS.length} إجابة</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${p}%"></div></div>
+      </div>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+function startNewStudent(){
+  cur={id:Date.now()};
+  QUESTIONS.forEach(q=>cur[q.id]='');
+  imgs=[];
+  activeSec=SECTIONS[0];
+  openEdit(null);
+}
+function editSt(i){
+  cur={...students[i]};
+  QUESTIONS.forEach(q=>{if(!(q.id in cur))cur[q.id]='';});
+  imgs=[];
+  activeSec=SECTIONS[0];
+  openEdit(students[i].name);
+}
+function delSt(i){
+  if(!confirm('هتحذف الطالب ده؟'))return;
+  students.splice(i,1);persist();renderList();
+}
+function cancelEdit(){
+  cur=null;
+  document.getElementById('editPanel').style.display='none';
+  document.getElementById('pageStudents').style.display='';
+  renderList();
+}
+function saveStudent(){
+  QUESTIONS.forEach(q=>{const el=document.getElementById('f_'+q.id);if(el)cur[q.id]=el.value;});
+  const idx=students.findIndex(s=>s.id===cur.id);
+  if(idx>=0)students[idx]=cur;else students.push(cur);
+  persist();cancelEdit();
+}
+
+// ===== EDIT PANEL =====
+function openEdit(name){
+  document.getElementById('pageStudents').style.display='none';
+  document.getElementById('editPanel').style.display='';
+  document.getElementById('editTitle').textContent=name||'طالب جديد';
+  document.getElementById('bannerSuccess').style.display='none';
+  document.getElementById('bannerLoading').style.display='none';
+  document.getElementById('imgInput').value='';
+  document.getElementById('previews').innerHTML='';
+  document.getElementById('imgCount').textContent='0';
+  imgs=[];
+  renderSecSelector();
+  renderForm();
+}
+function saveFields(){QUESTIONS.forEach(q=>{const el=document.getElementById('f_'+q.id);if(el)cur[q.id]=el.value;});}
+
+function renderSecSelector(){
+  document.getElementById('secSelector').innerHTML=SECTIONS.map(s=>
+    `<button class="sec-btn${s===activeSec?' active':''}" onclick="setSec('${s.replace(/'/g,"\\'")}')">${s}</button>`
+  ).join('');
+}
+function setSec(s){saveFields();activeSec=s;renderSecSelector();renderForm();}
+
+function renderForm(){
+  const qs=QUESTIONS.filter(q=>q.section===activeSec);
+  document.getElementById('formTitle').textContent=activeSec||'';
+  document.getElementById('formFields').innerHTML=qs.map(q=>{
+    const v=cur[q.id]||'';
+    return `<div class="field"><label>${q.label}</label><textarea id="f_${q.id}" class="${hasVal(v)?'filled':''}" placeholder="اكتب الإجابة هنا...">${v}</textarea></div>`;
+  }).join('');
+}
+
+// ===== IMAGES & AI =====
+function handleImgs(input){
+  const files=Array.from(input.files);
+  document.getElementById('imgCount').textContent=files.length;
+  imgs=[];
+  document.getElementById('previews').innerHTML='';
+  files.forEach(f=>{
+    const r=new FileReader();
+    r.onload=e=>{
+      imgs.push(e.target.result);
+      const img=document.createElement('img');
+      img.src=e.target.result;
+      img.className='preview-img';
+      document.getElementById('previews').appendChild(img);
+    };
+    r.readAsDataURL(f);
+  });
+}
+
+async function extractAI(){
+  const key=getKey();
+  if(!key){
+    alert('محتاج مفتاح API أولاً! اذهب لصفحة الإعدادات وحط مفتاح Anthropic API.');
+    return;
+  }
+  if(!imgs.length){alert('ارفع صور الكُتيب الأول!');return;}
+  document.getElementById('bannerLoading').style.display='flex';
+  document.getElementById('bannerSuccess').style.display='none';
+  try{
+    const qList=QUESTIONS.map((q,i)=>`${i+1}. [${q.id}] ${q.label}`).join('\n');
+    const imgContents=imgs.map(img=>({
+      type:'image',
+      source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}
+    }));
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:4000,
+        messages:[{role:'user',content:[
+          ...imgContents,
+          {type:'text',text:`أنت مساعد متخصص في قراءة الخط العربي المكتوب يدوياً واستخراج البيانات.\n\nالمهمة: استخرج إجابات الطالب من صور الكُتيب هذه.\n\nقائمة الأسئلة والمعرفات:\n${qList}\n\nالتعليمات:\n- اقرأ كل الصفحات بعناية\n- استخرج الإجابة لكل سؤال بالظبط كما كتبها الطالب\n- لو الإجابة غير موجودة أو مش واضحة اكتب "غير محدد"\n- رد فقط بـ JSON بدون أي نص إضافي\n\nمثال الشكل المطلوب:\n{"name":"اسم الطالب","age":"السن","area":"المنطقة","qs1":"..."}`}
+        ]}]
+      })
+    });
+    const data=await resp.json();
+    if(data.error){throw new Error(data.error.message);}
+    const text=data.content.map(c=>c.text||'').join('');
+    const clean=text.replace(/```json|```/g,'').trim();
+    const parsed=JSON.parse(clean);
+    Object.assign(cur,parsed);
+    activeSec=SECTIONS[0];
+    renderSecSelector();
+    renderForm();
+    document.getElementById('bannerSuccess').style.display='flex';
+  }catch(err){
+    alert('حصل خطأ: '+err.message);
+    console.error(err);
+  }
+  document.getElementById('bannerLoading').style.display='none';
+}
+
+// ===== ANALYSIS =====
+function renderAnalysis(){
+  document.getElementById('countBadge').textContent=`${students.length} / 32 طالب`;
+  const n=students.length;
+  const filled=students.reduce((s,st)=>s+QUESTIONS.filter(q=>hasVal(st[q.id])).length,0);
+  const avgPct=n?Math.round(filled/(n*QUESTIONS.length)*100):0;
+  document.getElementById('dashStats').innerHTML=`
+    <div class="dash-stat"><div class="dash-stat-num">${n}</div><div class="dash-stat-label">طالب مسجل</div></div>
+    <div class="dash-stat"><div class="dash-stat-num">${32-n}</div><div class="dash-stat-label">متبقي</div></div>
+    <div class="dash-stat"><div class="dash-stat-num">${avgPct}%</div><div class="dash-stat-label">متوسط الإكمال</div></div>
+    <div class="dash-stat"><div class="dash-stat-num">${filled}</div><div class="dash-stat-label">إجابة مسجلة</div></div>
+  `;
+  if(!n){document.getElementById('analysisTable').innerHTML='<tr><td style="padding:20px;color:#bbb;text-align:center">لا يوجد بيانات بعد</td></tr>';return;}
+  const t=document.getElementById('analysisTable');
+  t.innerHTML=`<thead><tr><th>#</th><th>الاسم</th><th>السن</th><th>المنطقة</th><th>الإكمال</th>${SECTIONS.map(s=>`<th>${s}</th>`).join('')}</tr></thead>`;
+  const tbody=document.createElement('tbody');
+  students.forEach((s,i)=>{
+    const p=pct(s);
+    const cls=p>=80?'pct-high':p>=50?'pct-mid':'pct-low';
+    const secPcts=SECTIONS.map(sec=>{
+      const qs=QUESTIONS.filter(q=>q.section===sec);
+      const done=qs.filter(q=>hasVal(s[q.id])).length;
+      const pp=Math.round(done/qs.length*100);
+      const c=pp>=80?'pct-high':pp>=50?'pct-mid':'pct-low';
+      return `<td class="pct-cell ${c}">${pp}%</td>`;
+    }).join('');
+    tbody.innerHTML+=`<tr><td>${i+1}</td><td>${s.name||'-'}</td><td>${s.age||'-'}</td><td>${s.area||'-'}</td><td class="pct-cell ${cls}">${p}%</td>${secPcts}</tr>`;
+  });
+  t.appendChild(tbody);
+}
+
+// ===== EXPORT EXCEL =====
+function exportExcel(){
+  if(!students.length){alert('لا يوجد بيانات للتصدير!');return;}
+  const wb=XLSX.utils.book_new();
+
+  // Sheet 1: البيانات الكاملة
+  const headers=['رقم','الاسم','السن','المنطقة',...QUESTIONS.slice(3).map(q=>q.label)];
+  const rows=students.map((s,i)=>[
+    i+1,s.name||'',s.age||'',s.area||'',
+    ...QUESTIONS.slice(3).map(q=>s[q.id]||'')
+  ]);
+  const ws1=XLSX.utils.aoa_to_sheet([headers,...rows]);
+  ws1['!cols']=[{wch:5},{wch:25},{wch:8},{wch:15},...QUESTIONS.slice(3).map(()=>({wch:40}))];
+  XLSX.utils.book_append_sheet(wb,ws1,'البيانات الكاملة');
+
+  // Sheet 2: ملخص الإكمال
+  const sumHeaders=['رقم','الاسم','المنطقة','% الإكمال الكلي',...SECTIONS.map(s=>s)];
+  const sumRows=students.map((s,i)=>{
+    const secPcts=SECTIONS.map(sec=>{
+      const qs=QUESTIONS.filter(q=>q.section===sec);
+      return Math.round(qs.filter(q=>hasVal(s[q.id])).length/qs.length*100)+'%';
+    });
+    return [i+1,s.name||'',s.area||'',pct(s)+'%',...secPcts];
+  });
+  const ws2=XLSX.utils.aoa_to_sheet([sumHeaders,...sumRows]);
+  ws2['!cols']=[{wch:5},{wch:25},{wch:15},{wch:15},...SECTIONS.map(()=>({wch:20}))];
+  XLSX.utils.book_append_sheet(wb,ws2,'ملخص الإكمال');
+
+  // Sheet 3: بطاقة الطالب فقط
+  const cardHeaders=['رقم','الاسم','السن','المنطقة'];
+  const cardRows=students.map((s,i)=>[i+1,s.name||'',s.age||'',s.area||'']);
+  const ws3=XLSX.utils.aoa_to_sheet([cardHeaders,...cardRows]);
+  ws3['!cols']=[{wch:5},{wch:30},{wch:10},{wch:20}];
+  XLSX.utils.book_append_sheet(wb,ws3,'بطاقات الطلاب');
+
+  XLSX.writeFile(wb,'رحلتي_مصر_القديمة_'+new Date().toLocaleDateString('ar-EG').replace(/\//g,'-')+'.xlsx');
+}
+
+// ===== BACKUP / RESTORE =====
+function exportJSON(){
+  const data={students,exportDate:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='رحلتي_نسخة_احتياطية_'+Date.now()+'.json';
+  a.click();
+}
+function importJSON(input){
+  const f=input.files[0];
+  if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      const arr=data.students||data;
+      if(!Array.isArray(arr))throw new Error('شكل الملف غلط');
+      if(!confirm(`هيتم استيراد ${arr.length} طالب. هتكمّل على البيانات الموجودة؟\n(اضغط إلغاء لو تريد يبدأ من الأول)`)){
+        students=arr;
+      } else {
+        arr.forEach(ns=>{
+          const idx=students.findIndex(s=>s.id===ns.id);
+          if(idx>=0)students[idx]=ns;else students.push(ns);
+        });
+      }
+      persist();renderList();
+      alert('تم الاستيراد بنجاح ✅');
+    }catch(err){alert('خطأ في الاستيراد: '+err.message);}
+  };
+  r.readAsText(f);
+  input.value='';
+}
+
+// ===== INIT =====
+renderList();
+</script>
+</body>
+</html>
